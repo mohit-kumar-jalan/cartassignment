@@ -9,20 +9,24 @@ export class CartController {
     @Post('add')
     async add(@Body() data: CartDTO){
         return {
-            statusCode: HttpStatus.OK,
+            
             data: await this.cartService.addProduct(data),
 
         }
     }
 
     @Delete('delete')
-    async deleteProduct(@Body() data:CartDTO){
+    async deleteProduct(@Body() data:Partial<CartDTO>){
         const res= this.cartService.removeProduct(data);
         
         return{
-            statusCode: HttpStatus.OK,
+            
             data: await this.cartService.removeProduct(data)
         }
+    }
+    @Delete('deleteall')
+    async deleteall(){
+        return await this.cartService.deleteAll()
     }
     
 

@@ -12,7 +12,7 @@ import jwtr from 'redis';
 import { TokenEntity } from './token.entity';
 
 let a = [];
-
+let b=[];
 @Injectable()
 export class UserService {
   constructor(
@@ -25,9 +25,19 @@ export class UserService {
   ) {}
 
   async signup(data: SignupDTO) {
+    const check=Boolean(await this.userRepository.findOne(data.contact))
+    //console.log(check)
+    if(!check){
     const user = this.userRepository.create(data);
     await this.userRepository.save(data);
     return user;
+  }
+
+else{
+  return {
+    message: "User with this mobile number already exist. Please login"
+  }
+}
   }
 
   async login(data: loginDto) {
@@ -36,13 +46,20 @@ export class UserService {
     });
 
     const accessToken = this.jwtService.sign({ user: data.email });
-    if (response.length) {
+    if (response.length && b.length===0) {
+      b.push(accessToken)
       return { success: true, message: 'Login success', accessToken };
-    } else {
+    } else if(b.length!=0 && response.length!=0) {
       return {
         success: false,
-        message: 'user does not found',
+        message: 'already logged in, logout first',
       };
+    }
+    else{
+      return{
+        success: false,
+        message: "User not found"
+      }
     }
   }
 
@@ -57,6 +74,7 @@ export class UserService {
         };
       } else {
         a.push(token);
+        b=[]
         return {
           success: true,
           message: 'success',

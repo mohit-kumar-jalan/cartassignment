@@ -10,7 +10,6 @@ export class UserEntity{
     email: string;
     @Column()
     password: string;
-    @Column()
-    isAdmin: boolean;
+    
     
 }

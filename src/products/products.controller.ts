@@ -10,8 +10,7 @@ export class ProductsController {
     @Post()
     async create(@Body() data: ProductsDTO){
         return {
-            statusCode: HttpStatus.OK,
-            message: 'Product added successfully',
+            
             data: await this.productsService.createProduct(data),
 
         }
@@ -40,19 +39,32 @@ export class ProductsController {
 
     @Put(':id')
     async updateProduct(@Param('id') id: number, @Body() data: Partial<ProductsDTO>){
+        const val=await this.productsService.update(id,data)
+        if(val.updated){
         return {
             statusCode: HttpStatus.OK,
             message: 'Product updated successfully',
             data: await this.productsService.update(id,data)
         }
     }
+    else{
+        return{
+            message: 'Product not found'
+        }
+    }
+    }
 
     @Delete(':id')
     async deleteProduct(@Param('id') id: number){
-        await this.productsService.delete(id);
-        return{
-            statusCode: HttpStatus.OK,
-            message: 'Product deleted'
+        const val=await this.productsService.delete(id);
+        if(val.deleted){
+            return{message: "product deleted"}
+            }
+        
+        else{
+            return{
+                    message: "product not available"
+            }
         }
     }
     

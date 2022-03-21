@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ProductsDTO } from './products.dto';
@@ -13,9 +13,18 @@ export class ProductsService {
   ) {}
 
   async createProduct(data: ProductsDTO) {
+    const check=await this.productRepository.find(data);
+    if(check.length===0){
     const product = this.productRepository.create(data);
     await this.productRepository.save(data);
-    return product;
+    return {statusCode: HttpStatus.OK,
+      message: 'Product added successfully',product};
+    }
+    else{
+      return {
+        message: "product already exist"
+      }
+    }
   }
 
   async getAll() {
@@ -33,13 +42,32 @@ export class ProductsService {
   }
 
   async update(id: number, data: Partial<ProductsDTO>) {
+    const check=Boolean(await this.productRepository.findOne({where: {id: id}}))
+    if(check){
     await this.productRepository.update({ id }, data);
-    return await this.productRepository.findOne({ id });
+    return { 
+      updated: true
+    }
+    }
+    else{
+      return {
+        updated: false
+      }
+    }
   }
 
   async delete(id: number) {
+    const check=Boolean(await this.productRepository.findOne({where: {id: id}}))
+    //console.log(check);
+    if(check){
     await this.productRepository.delete({ id });
     return { deleted: true };
+    }
+    else{
+      return{
+        deleted: false
+      }
+    }
   }
  
 }
