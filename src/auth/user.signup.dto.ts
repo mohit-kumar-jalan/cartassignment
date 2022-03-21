@@ -14,5 +14,7 @@ export class SignupDTO{
     @IsNotEmpty()
     @IsString()
     readonly password: string;
+    @IsNotEmpty()
+    readonly isAdmin: boolean;
     
 }

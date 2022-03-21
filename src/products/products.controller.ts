@@ -24,6 +24,10 @@ export class ProductsController {
             data: await this.productsService.getAll()
         }
     }
+    @Get('path')
+    async show(@Query() {start,limit}){
+        return this.productsService.page(start,limit)
+    }
 
 
     @Get(':id')
@@ -51,19 +55,5 @@ export class ProductsController {
             message: 'Product deleted'
         }
     }
-
-    @Get()
-  async index(
-    //@Query('page', new DefaultValuePipe(1), ParseIntPipe) page: number = 1,
-    @Query('limit', new DefaultValuePipe(10), ParseIntPipe) limit: number = 1,
-  ): Promise<Pagination<ProductsEntity>> {
-    limit = limit > 100 ? 100 : limit;
-    return this.productsService.paginate({
-    limit,
-    page: '',
-    route: 'http://localhost:3000/products'
-});
-  }
-
-
+    
 }
