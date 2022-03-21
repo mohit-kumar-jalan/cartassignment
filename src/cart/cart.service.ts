@@ -4,7 +4,7 @@ import { ProductsEntity } from 'src/products/products.entity';
 import { Repository } from 'typeorm';
 import { CartDTO } from './cart.dto';
 import { CartEntity } from './cart.entity';
-import { JwtModule, JwtService } from '@nestjs/jwt';
+import { JwtService } from '@nestjs/jwt';
 import { parse, stringify } from 'flatted';
 
 @Injectable()
@@ -24,9 +24,9 @@ export class CartService {
         else
         return false
     }
-    async addProduct(data: CartDTO){
+    async addProduct(data: CartDTO,accessToken){
         try{
-            this.jwtService.verify(data.accessToken)
+            this.jwtService.verify(accessToken)
         const find= await this.productRepository.find({where: {id: data.id, name: data.name, price: data.price}});
         /*const verify = await  this.verify(data.accessToken)
         console.log(verify)*/
@@ -60,9 +60,9 @@ export class CartService {
         }
     }
 
-    async removeProduct(data: Partial<CartDTO>){
+    async removeProduct(data: Partial<CartDTO>,accessToken){
         try{
-            this.jwtService.verify(data.accessToken)
+            this.jwtService.verify(accessToken)
         const find= await this.cartRepository.find({where: {id: data.id}});
 
         if(find.length!=0){

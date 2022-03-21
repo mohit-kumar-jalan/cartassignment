@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from './user.entity';
-import { JwtSecretRequestType, JwtService } from '@nestjs/jwt';
+import {  JwtService } from '@nestjs/jwt';
 import { loginDto } from './user.login.dto';
 import { SignupDTO } from './user.signup.dto';
 import { request } from 'http';
@@ -10,6 +10,7 @@ import { logoutDTO } from './user.logout.dto';
 import { parse, stringify } from 'flatted';
 import jwtr from 'redis';
 import { TokenEntity } from './token.entity';
+import { ExtractJwt } from 'passport-jwt';
 
 let a = [];
 let b=[];
@@ -63,10 +64,12 @@ else{
     }
   }
 
-  async logout(request: logoutDTO) {
+  async logout(accessToken) {
+    /*const s= ExtractJwt.fromAuthHeaderAsBearerToken();
+    console.log(s)*/
     try {
-      this.jwtService.verify(request.accessToken);
-      const token = request.accessToken;
+      this.jwtService.verify(accessToken);
+      const token = accessToken;
       if (a.includes(token)) {
         return {
           success: false,

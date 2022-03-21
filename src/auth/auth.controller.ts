@@ -1,8 +1,9 @@
-import { Body, Controller, Get, HttpStatus, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpStatus, Param, Post, Request } from '@nestjs/common';
 import { UserService } from './auth.service';
 import { loginDto } from './user.login.dto';
 import { logoutDTO } from './user.logout.dto';
 import { SignupDTO } from './user.signup.dto';
+import { parse, stringify } from 'flatted';
 
 @Controller('user')
 export class UserController {
@@ -23,7 +24,9 @@ export class UserController {
     }
 
     @Post('logout')
-  async logout(@Body() request: logoutDTO) {
-    return await this.userService.logout(request);
+  async logout(@Request() req) {
+    //const err = parse(stringify(req));
+    const token=req.headers['authorization'].split(' ')[1]
+    return await this.userService.logout(token);
   }
 }

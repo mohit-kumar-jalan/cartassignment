@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, HttpStatus, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpStatus, Param, Post , Request} from '@nestjs/common';
 import { CartDTO } from './cart.dto';
 import { CartService } from './cart.service';
 
@@ -7,21 +7,23 @@ export class CartController {
     constructor(private cartService: CartService){}
 
     @Post('add')
-    async add(@Body() data: CartDTO){
+    async add(@Body() data: CartDTO, @Request() req){
+        const token=req.headers['authorization'].split(' ')[1]
         return {
             
-            data: await this.cartService.addProduct(data),
+            data: await this.cartService.addProduct(data,token),
 
         }
     }
 
     @Delete('delete')
-    async deleteProduct(@Body() data:Partial<CartDTO>){
-        const res= this.cartService.removeProduct(data);
+    async deleteProduct(@Body() data:Partial<CartDTO>, @Request() req){
+        const token=req.headers['authorization'].split(' ')[1]
+        const res= this.cartService.removeProduct(data,token);
         
         return{
             
-            data: await this.cartService.removeProduct(data)
+            data: await this.cartService.removeProduct(data,token)
         }
     }
     @Delete('deleteall')

@@ -11,6 +11,4 @@ export class CartDTO{
     @IsNotEmpty()
     @IsNumber()
     price: number;
-    @IsNotEmpty()
-    readonly accessToken: string
 }
