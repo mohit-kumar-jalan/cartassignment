@@ -53,7 +53,7 @@ export class UserService {
       if (a.includes(token)) {
         return {
           success: false,
-          message: 'altready',
+          message: 'already logged out',
         };
       } else {
         a.push(token);
